@@ -26,15 +26,12 @@ namespace BPMServicesAPI.Controllers
         [HttpPost]
         public int RecedeRestart(BPMModels models)
         {
-
             using (BPMConnection cn = new BPMConnection())
             {
-
                 cn.Open(models.BPMServerIP, models.BPMUser, models.BPMUserPass, models.BPMServerPort);
                 BPMTask.RecedeRestart(cn, models.TaskId, models.Comments);
             }
             return 0;
-
         }
         /// <summary>
         /// 拒绝
@@ -45,15 +42,12 @@ namespace BPMServicesAPI.Controllers
         [HttpPost]
         public int Reject(BPMModels models)
         {
-
             using (BPMConnection cn = new BPMConnection())
             {
-
                 cn.Open(models.BPMServerIP, models.BPMUser, models.BPMUserPass, models.BPMServerPort);
                 BPMTask.Reject(cn, models.TaskId, models.Comments);
             }
             return 0;
-
         }
         /// <summary>
         /// 审核通过
@@ -68,7 +62,10 @@ namespace BPMServicesAPI.Controllers
             PostResult result = null;
             using (BPMConnection cn = new BPMConnection())
             {
-
+                //Version version = cn.GetGlobalObjectLastVersion(StoreZoneType.Process, models.ProcessName);
+                //MemberCollection positions = OrgSvr.GetUserPositions(cn, models.FullName);
+                //string FullName = positions[0].FullName;
+                //PostInfo info = BPMProcess.GetPostInfo(cn, models.ProcessName, version, FullName);
                 cn.Open(models.BPMServerIP, models.BPMUser, models.BPMUserPass, models.BPMServerPort);
                 result = BPMProcStep.Approve(cn, models.StepId, models.Comments, true);
             }
@@ -131,9 +128,26 @@ namespace BPMServicesAPI.Controllers
 
             }
             return taskid;
-
-
         }
-
+        /// <summary>
+        /// 获取路径
+        /// </summary>
+        /// <param name="models"></param>
+        /// <returns></returns>
+        [Route("api/GetUrl")]
+        [HttpPost]
+        public string GetPostUrl(BPMModels models)
+        {
+            PostInfo info = null;
+            using (BPMConnection cn = new BPMConnection())
+            {
+                cn.Open(models.BPMServerIP, models.BPMUser, models.BPMUserPass, models.BPMServerPort);
+                Version version = cn.GetGlobalObjectLastVersion(StoreZoneType.Process, models.ProcessName);
+                MemberCollection positions = OrgSvr.GetUserPositions(cn, models.FullName);
+                string FullName = positions[0].FullName;
+                info = BPMProcess.GetPostInfo(cn, models.ProcessName, version, FullName);
+            }
+            return info.FormFile;
+        }
     }
 }
