@@ -62,10 +62,6 @@ namespace BPMServicesAPI.Controllers
             PostResult result = null;
             using (BPMConnection cn = new BPMConnection())
             {
-                //Version version = cn.GetGlobalObjectLastVersion(StoreZoneType.Process, models.ProcessName);
-                //MemberCollection positions = OrgSvr.GetUserPositions(cn, models.FullName);
-                //string FullName = positions[0].FullName;
-                //PostInfo info = BPMProcess.GetPostInfo(cn, models.ProcessName, version, FullName);
                 cn.Open(models.BPMServerIP, models.BPMUser, models.BPMUserPass, models.BPMServerPort);
                 result = BPMProcStep.Approve(cn, models.StepId, models.Comments, true);
             }
